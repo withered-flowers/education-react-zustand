@@ -14,10 +14,12 @@ import useCounterStore, {
 } from "../stores/counter.js";
 
 // Import hooks zustand dan selector untuk user di sini
-import useUserStore, {
+import useUserWithLoaderStore, {
   selectUser,
-  selectFetchUserById,
-} from "../stores/user.js";
+  selectLoading,
+  selectError,
+  selectFetchUserByIdAction,
+} from "../stores/userWithLoader.js";
 
 const CounterZustandContainer = () => {
   const [currAmount, setCurrAmount] = useState(0);
@@ -35,8 +37,11 @@ const CounterZustandContainer = () => {
   );
 
   // Ambil state dan action lagi ...
-  const user = useUserStore(selectUser);
-  const fetchUserById = useUserStore(selectFetchUserById);
+  const user = useUserWithLoaderStore(selectUser);
+  const loading = useUserWithLoaderStore(selectLoading);
+  // error tidak digunakan di logic ini
+  const error = useUserWithLoaderStore(selectError);
+  const fetchUserById = useUserWithLoaderStore(selectFetchUserByIdAction);
 
   const buttonDecrementOnClickHandler = () => {
     decrementCounter();
@@ -67,7 +72,6 @@ const CounterZustandContainer = () => {
   };
 
   const buttonFetchUserOnClickHandler = () => {
-    // Panggil action sesuai kebutuhan logic (baik di onClick ataupun di useEffect)
     fetchUserById(userId);
   };
 
@@ -80,7 +84,6 @@ const CounterZustandContainer = () => {
   };
 
   useEffect(() => {
-    // Panggil action untuk dijalankan dalam effect
     fetchUserById(3);
   }, []);
 
@@ -101,6 +104,9 @@ const CounterZustandContainer = () => {
 
         {/* Panggil state di sini */}
         <Avatar src={user.avatar} alt="avatar" sx={{ width: 64, height: 64 }} />
+
+        {/* Misalnya kita tambah loading di sini */}
+        {loading ? <>Loading ...</> : <></>}
 
         <Typography variant="body1" component="div">
           {/* Panggil state di sini */}
