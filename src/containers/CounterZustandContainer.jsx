@@ -4,15 +4,45 @@ import { Avatar, Box, Button, TextField, Typography } from "@mui/material";
 
 import ColorListZustand from "../components/ColorListZustand.jsx";
 
+// Import hooks zustand dan selectornya di sini
+import useCounterStore, {
+  selectCounter,
+  selectIncrementCounterAction,
+  selectDecrementCounterAction,
+  selectResetCounterAction,
+  selectIncrementCounterByAmountAction,
+  selectDecrementCounterByAmountAction,
+} from "../stores/counter.js";
+
 const CounterZustandContainer = () => {
   const [currAmount, setCurrAmount] = useState(0);
   const [userId, setUserId] = useState(0);
 
-  const buttonDecrementOnClickHandler = () => {};
+  // Ambil state dan action berdasarkan hooks Zustand yang sudah dibuat
+  const counter = useCounterStore(selectCounter);
+  const incrementCounter = useCounterStore(selectIncrementCounterAction);
+  const decrementCounter = useCounterStore(selectDecrementCounterAction);
+  const resetCounter = useCounterStore(selectResetCounterAction);
+  const incrementCounterByAmount = useCounterStore(
+    selectIncrementCounterByAmountAction
+  );
+  const decrementCounterByAmount = useCounterStore(
+    selectDecrementCounterByAmountAction
+  );
 
-  const buttonResetOnClickHandler = () => {};
+  const buttonDecrementOnClickHandler = () => {
+    // Gunakan di dalam sini (panggil action seperti memanggil fungsi biasa)
+    // (Tidak ada dispatch dispatch lagi)
+    decrementCounter();
+  };
 
-  const buttonIncrementOnClickHandler = () => {};
+  const buttonResetOnClickHandler = () => {
+    resetCounter();
+  };
+
+  const buttonIncrementOnClickHandler = () => {
+    incrementCounter();
+  };
 
   const textFieldAmountOnChangeHandler = (e) => {
     const amountFromField = isNaN(parseInt(e.target.value))
@@ -32,9 +62,17 @@ const CounterZustandContainer = () => {
 
   const buttonFetchUserOnClickHandler = () => {};
 
-  const buttonDecrementByAmountOnClickHandler = () => {};
+  const buttonDecrementByAmountOnClickHandler = () => {
+    // Sama dengan yang action sebelumnya
+    // bila ingin menerima params, tinggal kirimkan seperti memanggil fungsi dengan
+    // parameter seperti biasanya
+    decrementCounterByAmount(currAmount);
+  };
 
-  const buttonIncrementByAmountOnClickHandler = () => {};
+  const buttonIncrementByAmountOnClickHandler = () => {
+    // sama dengan di atas
+    incrementCounterByAmount(currAmount);
+  };
 
   useEffect(() => {}, []);
 
@@ -80,8 +118,9 @@ const CounterZustandContainer = () => {
           <TextField
             disabled
             label="Current Counter"
-            defaultValue="0"
-            // value={counter}
+            // defaultValue="0"
+            // Panggil state seperti memanggil variabel biasa
+            value={counter}
             size="small"
           />
         </Box>
