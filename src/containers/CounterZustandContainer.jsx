@@ -4,7 +4,6 @@ import { Avatar, Box, Button, TextField, Typography } from "@mui/material";
 
 import ColorListZustand from "../components/ColorListZustand.jsx";
 
-// Import hooks zustand dan selectornya di sini
 import useCounterStore, {
   selectCounter,
   selectIncrementCounterAction,
@@ -14,11 +13,16 @@ import useCounterStore, {
   selectDecrementCounterByAmountAction,
 } from "../stores/counter.js";
 
+// Import hooks zustand dan selector untuk user di sini
+import useUserStore, {
+  selectUser,
+  selectFetchUserById,
+} from "../stores/user.js";
+
 const CounterZustandContainer = () => {
   const [currAmount, setCurrAmount] = useState(0);
   const [userId, setUserId] = useState(0);
 
-  // Ambil state dan action berdasarkan hooks Zustand yang sudah dibuat
   const counter = useCounterStore(selectCounter);
   const incrementCounter = useCounterStore(selectIncrementCounterAction);
   const decrementCounter = useCounterStore(selectDecrementCounterAction);
@@ -30,9 +34,11 @@ const CounterZustandContainer = () => {
     selectDecrementCounterByAmountAction
   );
 
+  // Ambil state dan action lagi ...
+  const user = useUserStore(selectUser);
+  const fetchUserById = useUserStore(selectFetchUserById);
+
   const buttonDecrementOnClickHandler = () => {
-    // Gunakan di dalam sini (panggil action seperti memanggil fungsi biasa)
-    // (Tidak ada dispatch dispatch lagi)
     decrementCounter();
   };
 
@@ -60,21 +66,23 @@ const CounterZustandContainer = () => {
     setUserId(valueUserId);
   };
 
-  const buttonFetchUserOnClickHandler = () => {};
+  const buttonFetchUserOnClickHandler = () => {
+    // Panggil action sesuai kebutuhan logic (baik di onClick ataupun di useEffect)
+    fetchUserById(userId);
+  };
 
   const buttonDecrementByAmountOnClickHandler = () => {
-    // Sama dengan yang action sebelumnya
-    // bila ingin menerima params, tinggal kirimkan seperti memanggil fungsi dengan
-    // parameter seperti biasanya
     decrementCounterByAmount(currAmount);
   };
 
   const buttonIncrementByAmountOnClickHandler = () => {
-    // sama dengan di atas
     incrementCounterByAmount(currAmount);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // Panggil action untuk dijalankan dalam effect
+    fetchUserById(3);
+  }, []);
 
   return (
     <>
@@ -91,10 +99,12 @@ const CounterZustandContainer = () => {
           React Redux
         </Typography>
 
-        <Avatar src={""} alt="avatar" sx={{ width: 64, height: 64 }} />
+        {/* Panggil state di sini */}
+        <Avatar src={user.avatar} alt="avatar" sx={{ width: 64, height: 64 }} />
 
         <Typography variant="body1" component="div">
-          Nama User: {""}
+          {/* Panggil state di sini */}
+          Nama User: {user.first_name}
         </Typography>
 
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
@@ -119,7 +129,6 @@ const CounterZustandContainer = () => {
             disabled
             label="Current Counter"
             // defaultValue="0"
-            // Panggil state seperti memanggil variabel biasa
             value={counter}
             size="small"
           />
